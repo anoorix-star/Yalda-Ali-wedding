@@ -154,7 +154,7 @@
         </svg>
     </div>
 
-    <audio id="bg-music" loop>
+    <audio id="bg-music" loop preload="auto">
         <source src="hochzeitssong.mp3" type="audio/mpeg">
     </audio>
 
@@ -277,23 +277,55 @@
         let isPlaying = false;
         let noteInterval;
 
-        musicBtn.addEventListener("click", () => {
-            if (isPlaying) {
-                music.pause();
-                musicBtn.classList.remove("playing");
-                clearInterval(noteInterval);
-            } else {
+        // Funktion zum Starten der Musik
+        function playMusic() {
+            if (!isPlaying) {
                 music.play().then(() => {
+                    isPlaying = true;
                     musicBtn.classList.add("playing");
                     startNoteAnimation();
-                }).catch(e => console.log("Interaktion nötig"));
+                    // Listener entfernen, damit es nur einmal triggert
+                    removeAutoPlayListeners();
+                }).catch(e => {
+                    console.log("Autoplay von Browser blockiert. Warte auf Nutzerinteraktion.");
+                });
             }
-            isPlaying = !isPlaying;
+        }
+
+        // Funktion zum Pausieren der Musik
+        function pauseMusic() {
+            music.pause();
+            isPlaying = false;
+            musicBtn.classList.remove("playing");
+            clearInterval(noteInterval);
+        }
+
+        // Toggle-Button Logik
+        musicBtn.addEventListener("click", (e) => {
+            e.stopPropagation(); // Verhindert, dass der Klick das playMusic auf dem Body triggert
+            if (isPlaying) {
+                pauseMusic();
+            } else {
+                playMusic();
+            }
         });
 
+        // Autoplay-Ersatz: Musik startet bei der ersten Bewegung/Klick auf der Seite
+        function removeAutoPlayListeners() {
+            document.removeEventListener('click', playMusic);
+            document.removeEventListener('touchstart', playMusic);
+            document.removeEventListener('scroll', playMusic);
+        }
+
+        document.addEventListener('click', playMusic);
+        document.addEventListener('touchstart', playMusic);
+        document.addEventListener('scroll', playMusic);
+
         function startNoteAnimation() {
+            if (noteInterval) clearInterval(noteInterval);
             noteInterval = setInterval(() => {
                 const container = document.getElementById("music-animation-container");
+                if (!container) return;
                 const note = document.createElement("div");
                 const notes = ["♫", "♪", "🌿", "♩"];
                 note.className = "note-float";
