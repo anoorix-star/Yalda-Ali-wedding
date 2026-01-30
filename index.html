@@ -44,6 +44,8 @@
             background-color: var(--sage-light);
             color: #4a4a4a;
             overflow-x: hidden;
+            width: 100%;
+            -webkit-font-smoothing: antialiased;
         }
 
         /* Florale Hintergrund-Elemente */
@@ -60,60 +62,66 @@
 
         .flower {
             position: absolute;
-            width: 300px;
+            width: 200px; /* Kleiner für Mobile */
             height: auto;
         }
 
-        .flower-tl { top: -50px; left: -50px; transform: rotate(10deg); }
-        .flower-tr { top: -50px; right: -50px; transform: rotate(80deg) scaleX(-1); }
-        .flower-bl { bottom: -50px; left: -50px; transform: rotate(-30deg); }
-        .flower-br { bottom: -50px; right: -50px; transform: rotate(-100deg) scaleX(-1); }
+        @media (min-width: 768px) {
+            .flower { width: 300px; }
+        }
+
+        .flower-tl { top: -40px; left: -40px; transform: rotate(10deg); }
+        .flower-tr { top: -40px; right: -40px; transform: rotate(80deg) scaleX(-1); }
+        .flower-bl { bottom: -40px; left: -40px; transform: rotate(-30deg); }
 
         .accent-color { color: var(--sage); }
         .btn-sage { background-color: var(--sage); }
 
         .image-container {
             width: 100%;
-            height: 500px;
+            height: 400px; /* Etwas kleiner für Mobile */
             background-image: url('https://i.postimg.cc/cHJfqsdD/IMG-6996.jpg');
             background-size: cover;
             background-position: center 20%;
-            border-radius: 40px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-            border: 8px solid white;
+            border-radius: 30px;
+            box-shadow: 0 15px 20px -5px rgba(0, 0, 0, 0.1);
+            border: 6px solid white;
+        }
+
+        @media (min-width: 768px) {
+            .image-container { height: 500px; border-radius: 40px; border-width: 8px; }
         }
 
         .countdown-item {
             background: white;
-            padding: 15px;
-            border-radius: 20px;
-            min-width: 75px;
+            padding: 10px;
+            border-radius: 12px;
+            min-width: 60px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
             border: 1px solid var(--sage-light);
         }
 
         #music-toggle {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
+            bottom: 20px;
+            right: 20px;
             z-index: 1000;
             background: white;
             border: 1px solid #e5e7eb;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            width: 55px;
-            height: 55px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s ease;
         }
 
         #music-toggle.playing {
             background: var(--sage);
             color: white;
-            transform: scale(1.1);
         }
 
         .note-float {
@@ -131,25 +139,25 @@
         }
 
         .card {
-            background: rgba(255, 255, 255, 0.85);
+            background: rgba(255, 255, 255, 0.88);
             backdrop-filter: blur(10px);
-            border-radius: 3rem;
-            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            width: 100%;
+            max-width: 100%;
+            margin-left: auto;
+            margin-right: auto;
         }
     </style>
 </head>
 <body class="font-sans">
 
-    <!-- Florale Hintergrundgrafiken (SVG) -->
+    <!-- Florale Hintergrundgrafiken -->
     <div class="floral-bg">
         <svg class="flower flower-tl" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
             <path fill="#7d8c76" opacity="0.2" d="M40,20 Q60,60 20,80 T30,140 Q70,110 100,150 T160,100 Q130,50 170,20 T40,20" />
-            <path fill="#7d8c76" opacity="0.1" d="M10,50 Q40,80 10,120 T60,160 Q90,120 120,150 T150,80" />
         </svg>
         <svg class="flower flower-tr" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-            <path fill="#7d8c76" opacity="0.2" d="M40,20 Q60,60 20,80 T30,140 Q70,110 100,150 T160,100 Q130,50 170,20 T40,20" />
-        </svg>
-        <svg class="flower flower-bl" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
             <path fill="#7d8c76" opacity="0.2" d="M40,20 Q60,60 20,80 T30,140 Q70,110 100,150 T160,100 Q130,50 170,20 T40,20" />
         </svg>
     </div>
@@ -160,100 +168,106 @@
 
     <button id="music-toggle" title="Musik abspielen/pausieren">
         <div id="music-animation-container" class="absolute inset-0 flex items-center justify-center"></div>
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2z" />
         </svg>
     </button>
 
-    <div class="pt-24 pb-12 px-6 text-center">
-        <h1 class="font-serif text-6xl md:text-8xl mb-4 italic tracking-tight text-stone-800">Yadla & Ali</h1>
-        <div class="flex justify-center items-center gap-4 my-8">
-            <div class="w-12 h-px bg-stone-300"></div>
-            <p class="font-cursive text-4xl accent-color">Wir laden euch ein</p>
-            <div class="w-12 h-px bg-stone-300"></div>
+    <!-- Header Bereich -->
+    <div class="pt-16 pb-6 px-4 text-center">
+        <h1 class="font-serif text-5xl md:text-8xl mb-4 italic tracking-tight text-stone-800">Yadla & Ali</h1>
+        <div class="flex justify-center items-center gap-3 my-4">
+            <div class="w-6 md:w-12 h-px bg-stone-300"></div>
+            <p class="font-cursive text-2xl md:text-4xl accent-color">Wir laden euch ein</p>
+            <div class="w-6 md:w-12 h-px bg-stone-300"></div>
         </div>
     </div>
 
-    <header class="max-w-4xl mx-auto px-4 pb-16">
+    <!-- Bild Bereich -->
+    <header class="max-w-4xl mx-auto px-4 pb-10">
         <div class="image-container"></div>
     </header>
 
-    <section class="max-w-2xl mx-auto py-16 px-6 text-center card mb-16 p-12">
-        <p class="font-serif text-2xl mb-8 italic text-stone-500">
-            „Zwei Herzen, ein Schlag. Zwei Seelen, ein Versprechen.“
-        </p>
-        <p class="text-stone-600 leading-relaxed text-xl">
-            Liebe Familie, liebe Freunde, <br>
-            wir freuen uns riesig darauf, den Beginn unseres gemeinsamen Lebensweges mit euch allen zu feiern.
-        </p>
+    <!-- Einleitungskarte -->
+    <section class="max-w-2xl mx-auto py-8 px-4">
+        <div class="card p-8 md:p-12 text-center shadow-sm">
+            <p class="font-serif text-lg md:text-2xl mb-6 italic text-stone-500 italic">
+                „Zwei Herzen, ein Schlag. Zwei Seelen, ein Versprechen.“
+            </p>
+            <p class="text-stone-600 leading-relaxed text-base md:text-xl">
+                Liebe Familie, liebe Freunde, <br>
+                wir freuen uns riesig darauf, den Beginn unseres gemeinsamen Lebensweges mit euch allen zu feiern.
+            </p>
+        </div>
     </section>
 
-    <section class="max-w-5xl mx-auto px-6 grid md:grid-cols-2 gap-12 mb-24">
-        <div class="card p-12 text-center flex flex-col justify-center">
-            <div class="text-4xl mb-4">📅</div>
-            <h3 class="font-serif text-3xl mb-4 accent-color">Wann?</h3>
-            <p class="text-2xl font-bold tracking-widest uppercase text-stone-700">10. April 2026</p>
-            <p class="text-stone-500 text-lg mt-2">Trauung um 14:00 Uhr <br> Feier ab 18:00 Uhr</p>
-            <div class="mt-12">
-                <h3 class="font-serif text-xl mb-6 italic text-stone-400">Countdown</h3>
-                <div id="countdown" class="flex justify-center gap-3">
-                    <div class="countdown-item"><div id="days" class="text-2xl font-bold accent-color">00</div><div class="text-[10px] uppercase tracking-widest">Tage</div></div>
-                    <div class="countdown-item"><div id="hours" class="text-2xl font-bold accent-color">00</div><div class="text-[10px] uppercase tracking-widest">Std</div></div>
-                    <div class="countdown-item"><div id="minutes" class="text-2xl font-bold accent-color">00</div><div class="text-[10px] uppercase tracking-widest">Min</div></div>
-                    <div class="countdown-item"><div id="seconds" class="text-2xl font-bold accent-color">00</div><div class="text-[10px] uppercase tracking-widest">Sek</div></div>
+    <!-- Hauptbereich mit Datum und Location Karten -->
+    <section class="max-w-5xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+        <!-- Wann Karte -->
+        <div class="card p-8 md:p-12 text-center shadow-md flex flex-col justify-center items-center">
+            <div class="text-4xl mb-3">📅</div>
+            <h3 class="font-serif text-2xl md:text-3xl mb-3 accent-color">Wann?</h3>
+            <p class="text-xl md:text-2xl font-bold tracking-widest uppercase text-stone-700">10. April 2026</p>
+            <p class="text-stone-500 text-base md:text-lg mt-1">Trauung um 14:00 Uhr <br> Feier ab 18:00 Uhr</p>
+            
+            <div class="mt-8 w-full">
+                <h3 class="font-serif text-base mb-3 italic text-stone-400">Countdown</h3>
+                <div id="countdown" class="flex justify-center gap-2">
+                    <div class="countdown-item"><div id="days" class="text-lg md:text-2xl font-bold accent-color">00</div><div class="text-[8px] uppercase tracking-widest">Tage</div></div>
+                    <div class="countdown-item"><div id="hours" class="text-lg md:text-2xl font-bold accent-color">00</div><div class="text-[8px] uppercase tracking-widest">Std</div></div>
+                    <div class="countdown-item"><div id="minutes" class="text-lg md:text-2xl font-bold accent-color">00</div><div class="text-[8px] uppercase tracking-widest">Min</div></div>
+                    <div class="countdown-item"><div id="seconds" class="text-lg md:text-2xl font-bold accent-color">00</div><div class="text-[8px] uppercase tracking-widest">Sek</div></div>
                 </div>
             </div>
         </div>
 
-        <div class="card p-12 text-center">
-            <div class="text-4xl mb-4">📍</div>
-            <h3 class="font-serif text-3xl mb-4 accent-color">Wo?</h3>
-            <p class="text-xl font-bold italic text-stone-700">Almas Event Center</p>
-            <p class="text-stone-500 text-lg mt-2 mb-8">Achtzehnmorgenweg 8 <br> 61250 Usingen</p>
-            <div class="flex flex-col gap-4">
-                <a href="https://www.google.com/maps/search/?api=1&query=Almas+Event+Center+Achtzehnmorgenweg+8+61250+Usingen" target="_blank" class="btn-sage text-white py-4 px-8 rounded-2xl text-sm font-bold shadow-lg transition-transform active:scale-95 text-center">Route mit Google Maps</a>
-                <a href="https://maps.apple.com/?address=Achtzehnmorgenweg%208,61250%20Usingen" target="_blank" class="bg-stone-100 text-stone-600 py-4 px-8 rounded-2xl text-sm font-bold shadow-sm transition-transform active:scale-95 text-center">Route mit Apple Maps</a>
+        <!-- Wo Karte -->
+        <div class="card p-8 md:p-12 text-center shadow-md flex flex-col justify-center items-center">
+            <div class="text-4xl mb-3">📍</div>
+            <h3 class="font-serif text-2xl md:text-3xl mb-3 accent-color">Wo?</h3>
+            <p class="text-lg md:text-xl font-bold italic text-stone-700">Almas Event Center</p>
+            <p class="text-stone-500 text-base md:text-lg mt-1 mb-6">Achtzehnmorgenweg 8 <br> 61250 Usingen</p>
+            <div class="flex flex-col gap-3 w-full max-w-[280px]">
+                <a href="https://www.google.com/maps/search/?api=1&query=Almas+Event+Center+Achtzehnmorgenweg+8+61250+Usingen" target="_blank" class="btn-sage text-white py-4 px-4 rounded-2xl text-xs font-bold shadow-lg transition-transform active:scale-95 text-center">Route mit Google Maps</a>
+                <a href="https://maps.apple.com/?address=Achtzehnmorgenweg%208,61250%20Usingen" target="_blank" class="bg-stone-100 text-stone-600 py-4 px-4 rounded-2xl text-xs font-bold shadow-sm transition-transform active:scale-95 text-center">Route mit Apple Maps</a>
             </div>
         </div>
     </section>
 
-    <section id="rsvp" class="py-24 px-4 max-w-2xl mx-auto mb-20">
-        <div class="card p-12 md:p-16 text-center shadow-2xl relative overflow-hidden">
-            <div class="absolute -top-10 -right-10 opacity-20 rotate-45">
-                <svg width="150" height="150" viewBox="0 0 200 200"><path fill="#7d8c76" d="M40,20 Q60,60 20,80 T30,140 Q70,110 100,150 T160,100 Q130,50 170,20 T40,20"/></svg>
-            </div>
-            <h2 class="font-serif text-4xl mb-4 italic accent-color">Rückmeldung</h2>
-            <p class="mb-12 text-stone-500">Damit wir besser planen können, freuen wir uns über eure Zusage oder Absage bis zum <span class="font-bold">10. März 2026</span>.</p>
-            <form id="inviteForm" action="https://formspree.io/f/mkobvano" method="POST" class="space-y-6 relative z-10 text-left">
+    <!-- RSVP Bereich -->
+    <section id="rsvp" class="py-8 px-4 max-w-2xl mx-auto mb-16">
+        <div class="card p-8 md:p-16 text-center shadow-xl relative overflow-hidden">
+            <h2 class="font-serif text-3xl md:text-4xl mb-3 italic accent-color">Rückmeldung</h2>
+            <p class="mb-8 text-stone-500 text-sm md:text-base">Damit wir besser planen können, freuen wir uns über eure Zusage oder Absage bis zum <span class="font-bold">10. März 2026</span>.</p>
+            <form id="inviteForm" action="https://formspree.io/f/mkobvano" method="POST" class="space-y-4 text-left w-full">
                 <div>
-                    <label class="block text-xs uppercase tracking-widest text-stone-400 mb-2 ml-2">Eure Namen</label>
-                    <input type="text" name="Name" required class="w-full bg-stone-50 border-stone-200 border rounded-2xl p-5 text-stone-700 focus:ring-2 focus:ring-[#7d8c76] outline-none" placeholder="z.B. Yadla & Ali">
+                    <label class="block text-[10px] uppercase tracking-widest text-stone-400 mb-1 ml-1">Eure Namen</label>
+                    <input type="text" name="Name" required class="w-full bg-stone-50 border-stone-200 border rounded-xl p-4 text-sm text-stone-700 outline-none focus:border-[#7d8c76]" placeholder="z.B. Yadla & Ali">
                 </div>
                 <div>
-                    <label class="block text-xs uppercase tracking-widest text-stone-400 mb-2 ml-2">Kommt ihr?</label>
-                    <select name="Status" required class="w-full bg-stone-50 border-stone-200 border rounded-2xl p-5 text-stone-700 appearance-none focus:ring-2 focus:ring-[#7d8c76] outline-none">
+                    <label class="block text-[10px] uppercase tracking-widest text-stone-400 mb-1 ml-1">Kommt ihr?</label>
+                    <select name="Status" required class="w-full bg-stone-50 border-stone-200 border rounded-xl p-4 text-sm text-stone-700 outline-none focus:border-[#7d8c76]">
                         <option value="">Bitte wählen...</option>
                         <option value="Zusage">Ja, wir sind dabei!</option>
                         <option value="Absage">Leider können wir nicht.</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs uppercase tracking-widest text-stone-400 mb-2 ml-2">Nachricht an uns</label>
-                    <textarea name="Nachricht" class="w-full bg-stone-50 border-stone-200 border rounded-2xl p-5 text-stone-700 focus:ring-2 focus:ring-[#7d8c76] outline-none" rows="4" placeholder="Allergien, Wünsche oder liebe Worte..."></textarea>
+                    <label class="block text-[10px] uppercase tracking-widest text-stone-400 mb-1 ml-1">Nachricht an uns</label>
+                    <textarea name="Nachricht" class="w-full bg-stone-50 border-stone-200 border rounded-xl p-4 text-sm text-stone-700 outline-none focus:border-[#7d8c76]" rows="3" placeholder="Wünsche oder liebe Worte..."></textarea>
                 </div>
-                <button type="submit" id="submitBtn" class="w-full btn-sage text-white py-6 rounded-2xl font-bold uppercase tracking-widest text-sm shadow-xl transition-all hover:brightness-110 active:scale-95 mt-4">Rückmeldung geben</button>
+                <button type="submit" id="submitBtn" class="w-full btn-sage text-white py-5 rounded-xl font-bold uppercase tracking-widest text-xs shadow-lg active:scale-95 mt-2">Senden</button>
             </form>
-            <div id="successMessage" class="hidden py-12">
-                <div class="text-5xl mb-6">🌿</div>
-                <p class="text-3xl font-serif accent-color">Vielen Dank!</p>
-                <p class="text-stone-500 mt-4">Deine Nachricht wurde verschickt.</p>
-                <button onclick="location.reload()" class="mt-8 text-xs underline opacity-40">Weitere Antwort senden</button>
+            <div id="successMessage" class="hidden py-10">
+                <div class="text-4xl mb-4">🌿</div>
+                <p class="text-2xl font-serif accent-color">Vielen Dank!</p>
+                <p class="text-stone-500 mt-2 text-sm">Deine Nachricht wurde verschickt.</p>
             </div>
-            <div id="errorMessage" class="hidden py-6 text-red-400 text-sm"><p>Fehler beim Senden. Bitte versuche es noch einmal.</p></div>
+            <div id="errorMessage" class="hidden py-4 text-red-400 text-xs"><p>Fehler beim Senden. Bitte versuche es noch einmal.</p></div>
         </div>
     </section>
 
-    <footer class="py-16 text-center text-stone-400 text-[10px] tracking-[0.5em] uppercase">Yadla & Ali — 10.04.2026</footer>
+    <footer class="py-12 text-center text-stone-400 text-[9px] tracking-[0.4em] uppercase">Yadla & Ali — 10.04.2026</footer>
 
     <script>
         const targetDate = new Date("April 10, 2026 14:00:00").getTime();
@@ -261,7 +275,7 @@
             const now = new Date().getTime();
             const distance = targetDate - now;
             if (distance < 0) {
-                document.getElementById("countdown").innerHTML = "<p class='font-serif text-xl accent-color'>Der große Tag ist da!</p>";
+                document.getElementById("countdown").innerHTML = "<p class='font-serif text-lg accent-color'>Der große Tag ist da!</p>";
                 return;
             }
             document.getElementById("days").innerText = Math.floor(distance / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
@@ -277,22 +291,19 @@
         let isPlaying = false;
         let noteInterval;
 
-        // Funktion zum Starten der Musik
         function playMusic() {
             if (!isPlaying) {
                 music.play().then(() => {
                     isPlaying = true;
                     musicBtn.classList.add("playing");
                     startNoteAnimation();
-                    // Listener entfernen, damit es nur einmal triggert
                     removeAutoPlayListeners();
                 }).catch(e => {
-                    console.log("Autoplay von Browser blockiert. Warte auf Nutzerinteraktion.");
+                    console.log("Autoplay blockiert.");
                 });
             }
         }
 
-        // Funktion zum Pausieren der Musik
         function pauseMusic() {
             music.pause();
             isPlaying = false;
@@ -300,17 +311,12 @@
             clearInterval(noteInterval);
         }
 
-        // Toggle-Button Logik
         musicBtn.addEventListener("click", (e) => {
-            e.stopPropagation(); // Verhindert, dass der Klick das playMusic auf dem Body triggert
-            if (isPlaying) {
-                pauseMusic();
-            } else {
-                playMusic();
-            }
+            e.stopPropagation();
+            if (isPlaying) pauseMusic();
+            else playMusic();
         });
 
-        // Autoplay-Ersatz: Musik startet bei der ersten Bewegung/Klick auf der Seite
         function removeAutoPlayListeners() {
             document.removeEventListener('click', playMusic);
             document.removeEventListener('touchstart', playMusic);
@@ -327,10 +333,9 @@
                 const container = document.getElementById("music-animation-container");
                 if (!container) return;
                 const note = document.createElement("div");
-                const notes = ["♫", "♪", "🌿", "♩"];
                 note.className = "note-float";
-                note.innerText = notes[Math.floor(Math.random() * notes.length)];
-                note.style.left = (Math.random() * 40 - 20) + "px";
+                note.innerText = ["♫", "♪", "🌿", "♩"][Math.floor(Math.random() * 4)];
+                note.style.left = (Math.random() * 30 - 15) + "px";
                 container.appendChild(note);
                 setTimeout(() => note.remove(), 2000);
             }, 700);
@@ -353,7 +358,7 @@
             } catch (error) {
                 errorDiv.classList.remove("hidden");
                 submitBtn.disabled = false;
-                submitBtn.innerText = "Rückmeldung geben";
+                submitBtn.innerText = "Senden";
             }
         });
     </script>
