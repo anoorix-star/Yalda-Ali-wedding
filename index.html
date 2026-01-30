@@ -367,15 +367,23 @@
     <footer class="py-12 text-center text-stone-400 text-[9px] tracking-[0.4em] uppercase">Yadla & Ali — 10.04.2026</footer>
 
     <script>
-        // Check if user already submitted
-        window.addEventListener('DOMContentLoaded', () => {
+        // SOFORT PRÜFEN: Hat der Nutzer bereits geantwortet?
+        function checkRSVPStatus() {
             const hasSubmitted = localStorage.getItem('wedding_rsvp_submitted');
-            if (hasSubmitted) {
-                document.getElementById('inviteForm').classList.add('hidden');
-                document.getElementById('rsvp-instruction').classList.add('hidden');
-                document.getElementById('successMessage').classList.remove('hidden');
+            if (hasSubmitted === 'true') {
+                const form = document.getElementById('inviteForm');
+                const instruction = document.getElementById('rsvp-instruction');
+                const successMsg = document.getElementById('successMessage');
+                
+                if (form) form.style.display = 'none';
+                if (instruction) instruction.style.display = 'none';
+                if (successMsg) successMsg.classList.remove('hidden');
             }
-        });
+        }
+
+        // Führe die Prüfung direkt beim Laden aus
+        window.addEventListener('load', checkRSVPStatus);
+        checkRSVPStatus(); // Sicherheitshalber sofort aufrufen
 
         const targetDate = new Date("April 10, 2026 14:00:00").getTime();
         function updateCountdown() {
@@ -456,6 +464,12 @@
 
         form.addEventListener("submit", async function(event) {
             event.preventDefault();
+            
+            // Zweite Sicherheitsprüfung vor dem Senden
+            if (localStorage.getItem('wedding_rsvp_submitted') === 'true') {
+                return;
+            }
+
             submitBtn.disabled = true;
             submitBtn.innerText = "Wird gesendet...";
             errorDiv.classList.add("hidden");
@@ -468,11 +482,11 @@
                     headers: { 'Accept': 'application/json' } 
                 });
                 if (response.ok) { 
-                    // Save to local storage that user has submitted
+                    // Speichere den Status dauerhaft auf dem Gerät
                     localStorage.setItem('wedding_rsvp_submitted', 'true');
                     
-                    form.classList.add("hidden"); 
-                    instruction.classList.add("hidden");
+                    form.style.display = 'none'; 
+                    instruction.style.display = 'none';
                     successDiv.classList.remove("hidden"); 
                 }
                 else { throw new Error(); }
