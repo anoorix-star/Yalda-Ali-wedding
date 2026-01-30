@@ -15,7 +15,7 @@
     <meta property="og:title" content="Hochzeitseinladung: Yadla & Ali">
     <meta property="og:description" content="Wir laden euch herzlich ein! Seid dabei, wenn wir uns am 10.04.2026 das Versprechen geben.">
     
-    <!-- Bild-Tags (Aktualisiert auf den neuen JPG Link) -->
+    <!-- Bild-Tags -->
     <meta property="og:image" content="https://i.postimg.cc/wxyrrgPF/Vorschau-E.jpg">
     <meta property="og:image:secure_url" content="https://i.postimg.cc/wxyrrgPF/Vorschau-E.jpg">
     <meta property="og:image:type" content="image/jpeg">
@@ -152,7 +152,6 @@
             margin-right: auto;
         }
 
-        /* Anpassung für die Karten-Buttons */
         .map-btn {
             background-color: var(--sage);
             color: white;
@@ -169,6 +168,22 @@
         .map-btn:active {
             transform: scale(0.98);
             filter: brightness(0.9);
+        }
+
+        .hotel-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: white;
+            padding: 1rem;
+            border-radius: 1rem;
+            border: 1px solid #eee;
+            transition: all 0.3s ease;
+        }
+
+        .hotel-link:hover {
+            border-color: var(--sage);
+            transform: translateY(-2px);
         }
     </style>
 </head>
@@ -261,6 +276,52 @@
             <div class="flex flex-col gap-4 w-full max-w-[280px]">
                 <a href="https://www.google.com/maps/search/?api=1&query=Almas+Event+Center+Achtzehnmorgenweg+8+61250+Usingen" target="_blank" class="map-btn">Route mit Google Maps</a>
                 <a href="https://maps.apple.com/?address=Achtzehnmorgenweg%208,61250%20Usingen" target="_blank" class="map-btn">Route mit Apple Maps</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Unterkunft Sektion -->
+    <section class="max-w-2xl mx-auto py-8 px-4 mb-12">
+        <div class="card p-8 md:p-12 text-center shadow-md">
+            <div class="text-4xl mb-3 text-sage flex justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+            </div>
+            <!-- Schriftart angepasst an "Rückmeldung" (font-serif + italic) -->
+            <h3 class="font-serif text-2xl md:text-3xl mb-6 italic accent-color">Übernachtungsmöglichkeiten</h3>
+            <p class="text-stone-500 text-sm md:text-base mb-8">Für Gäste mit einer weiten Anreise haben wir hier einige Empfehlungen in der Nähe der Location:</p>
+            
+            <div class="space-y-4">
+                <a href="https://maps.app.goo.gl/Ex3ub6HHnzTn8fpSA" target="_blank" class="hotel-link group">
+                    <div class="text-left">
+                        <span class="block font-bold text-stone-700">Limes Hotel</span>
+                        <span class="text-xs text-stone-400">📍 ca. 5 Min. Fahrtzeit</span>
+                    </div>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-stone-300 group-hover:text-sage" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </a>
+
+                <a href="https://maps.app.goo.gl/nMd2B1h9bXvUCNYQ7" target="_blank" class="hotel-link group">
+                    <div class="text-left">
+                        <span class="block font-bold text-stone-700">Landgasthof Eschbacher Katz</span>
+                        <span class="text-xs text-stone-400">📍 ca. 8 Min. Fahrtzeit</span>
+                    </div>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-stone-300 group-hover:text-sage" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </a>
+
+                <a href="https://maps.app.goo.gl/Eqdtz952SiybcVSv7" target="_blank" class="hotel-link group">
+                    <div class="text-left">
+                        <span class="block font-bold text-stone-700">Pension Christine</span>
+                        <span class="text-xs text-stone-400">📍 ca. 10 Min. Fahrtzeit</span>
+                    </div>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-stone-300 group-hover:text-sage" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </a>
             </div>
         </div>
     </section>
