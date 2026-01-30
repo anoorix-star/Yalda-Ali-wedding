@@ -83,7 +83,7 @@
         .image-container {
             width: 100%;
             height: 400px;
-            background-image: url('https://i.postimg.cc/0Q859ZM5/unnamed.jpg');
+            background-image: url('https://i.postimg.cc/BnBHp7Gk/unnamed-(2).jpg');
             background-size: cover;
             background-position: center 30%;
             border-radius: 30px;
@@ -367,7 +367,6 @@
     <footer class="py-12 text-center text-stone-400 text-[9px] tracking-[0.4em] uppercase">Yalda & Ali — 10.04.2026</footer>
 
     <script>
-        // SOFORT PRÜFEN: Hat der Nutzer bereits geantwortet?
         function checkRSVPStatus() {
             const hasSubmitted = localStorage.getItem('wedding_rsvp_submitted');
             if (hasSubmitted === 'true') {
@@ -381,22 +380,25 @@
             }
         }
 
-        // Führe die Prüfung direkt beim Laden aus
         window.addEventListener('load', checkRSVPStatus);
-        checkRSVPStatus(); // Sicherheitshalber sofort aufrufen
 
         const targetDate = new Date("April 10, 2026 14:00:00").getTime();
         function updateCountdown() {
             const now = new Date().getTime();
             const distance = targetDate - now;
             if (distance < 0) {
-                document.getElementById("countdown").innerHTML = "<p class='font-serif text-lg accent-color'>Der große Tag ist da!</p>";
+                const countdownEl = document.getElementById("countdown");
+                if (countdownEl) countdownEl.innerHTML = "<p class='font-serif text-lg accent-color'>Der große Tag ist da!</p>";
                 return;
             }
-            document.getElementById("days").innerText = Math.floor(distance / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
-            document.getElementById("hours").innerText = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
-            document.getElementById("minutes").innerText = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
-            document.getElementById("seconds").innerText = Math.floor((distance % (1000 * 60)) / 1000).toString().padStart(2, '0');
+            const d = document.getElementById("days");
+            const h = document.getElementById("hours");
+            const m = document.getElementById("minutes");
+            const s = document.getElementById("seconds");
+            if(d) d.innerText = Math.floor(distance / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
+            if(h) h.innerText = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
+            if(m) m.innerText = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+            if(s) s.innerText = Math.floor((distance % (1000 * 60)) / 1000).toString().padStart(2, '0');
         }
         setInterval(updateCountdown, 1000);
         updateCountdown();
@@ -407,10 +409,10 @@
         let noteInterval;
 
         function playMusic() {
-            if (!isPlaying) {
+            if (!isPlaying && music) {
                 music.play().then(() => {
                     isPlaying = true;
-                    musicBtn.classList.add("playing");
+                    if (musicBtn) musicBtn.classList.add("playing");
                     startNoteAnimation();
                     removeAutoPlayListeners();
                 }).catch(e => {
@@ -420,17 +422,19 @@
         }
 
         function pauseMusic() {
-            music.pause();
+            if (music) music.pause();
             isPlaying = false;
-            musicBtn.classList.remove("playing");
+            if (musicBtn) musicBtn.classList.remove("playing");
             clearInterval(noteInterval);
         }
 
-        musicBtn.addEventListener("click", (e) => {
-            e.stopPropagation();
-            if (isPlaying) pauseMusic();
-            else playMusic();
-        });
+        if (musicBtn) {
+            musicBtn.addEventListener("click", (e) => {
+                e.stopPropagation();
+                if (isPlaying) pauseMusic();
+                else playMusic();
+            });
+        }
 
         function removeAutoPlayListeners() {
             document.removeEventListener('click', playMusic);
@@ -462,40 +466,43 @@
         const errorDiv = document.getElementById("errorMessage");
         const instruction = document.getElementById("rsvp-instruction");
 
-        form.addEventListener("submit", async function(event) {
-            event.preventDefault();
-            
-            // Zweite Sicherheitsprüfung vor dem Senden
-            if (localStorage.getItem('wedding_rsvp_submitted') === 'true') {
-                return;
-            }
-
-            submitBtn.disabled = true;
-            submitBtn.innerText = "Wird gesendet...";
-            errorDiv.classList.add("hidden");
-            
-            const formData = new FormData(form);
-            try {
-                const response = await fetch(form.action, { 
-                    method: 'POST', 
-                    body: formData, 
-                    headers: { 'Accept': 'application/json' } 
-                });
-                if (response.ok) { 
-                    // Speichere den Status dauerhaft auf dem Gerät
-                    localStorage.setItem('wedding_rsvp_submitted', 'true');
-                    
-                    form.style.display = 'none'; 
-                    instruction.style.display = 'none';
-                    successDiv.classList.remove("hidden"); 
+        if (form) {
+            form.addEventListener("submit", async function(event) {
+                event.preventDefault();
+                
+                if (localStorage.getItem('wedding_rsvp_submitted') === 'true') {
+                    return;
                 }
-                else { throw new Error(); }
-            } catch (error) {
-                errorDiv.classList.remove("hidden");
-                submitBtn.disabled = false;
-                submitBtn.innerText = "Senden";
-            }
-        });
+
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.innerText = "Wird gesendet...";
+                }
+                if (errorDiv) errorDiv.classList.add("hidden");
+                
+                const formData = new FormData(form);
+                try {
+                    const response = await fetch(form.action, { 
+                        method: 'POST', 
+                        body: formData, 
+                        headers: { 'Accept': 'application/json' } 
+                    });
+                    if (response.ok) { 
+                        localStorage.setItem('wedding_rsvp_submitted', 'true');
+                        form.style.display = 'none'; 
+                        if (instruction) instruction.style.display = 'none';
+                        if (successDiv) successDiv.classList.remove("hidden"); 
+                    }
+                    else { throw new Error(); }
+                } catch (error) {
+                    if (errorDiv) errorDiv.classList.remove("hidden");
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.innerText = "Senden";
+                    }
+                }
+            });
+        }
     </script>
 </body>
 </html>
